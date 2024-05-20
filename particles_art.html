@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Some Particle Art</title>
+
+	</head>
+
+	<body style="margin: 0">
+
+		<canvas id="theCanvas"></canvas>
+		<script>
+			// fetch the canvas element from html file
+			var canvas = document.getElementById("theCanvas");
+			var ctx = canvas.getContext('2d');
+
+			// resize the canvas to the size of the current window
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+
+			// simulate particles going past the boundaries
+			let padding = 20;
+
+			// canvas dimensions
+			let canvasW = canvas.width + padding;
+			let canvasH = canvas.height + padding;
+
+			// number of particles to draw
+			let n = canvasW / 13;
+
+			//minimum distance to draw an edge between particles
+			let d = 250;
+
+
+			class Particle {
+				// create a particle object with a random location and random velocity
+				constructor(x, y, vx, vy, color) {
+					this.x = Math.random() * canvasW;
+					this.y = Math.random() * canvasH;
+					this.vx = Math.random() * 8 - 4;
+					this.vy = Math.random() * 8 - 4;
+					this.color = Math.floor(Math.random()*16777215).toString(16);
+				}
+
+				showParticle() {
+					// show the particle on the canvas
+					ctx.beginPath();
+					// ctx.fillStyle = "#" + this.color;
+					ctx.fillStyle = 'black';
+					ctx.arc(this.x, this.y, 0, 0, Math.PI * 2, true);
+					ctx.globalAlpha = 1;
+					ctx.closePath();
+					ctx.fill();
+				}
+
+				moveParticle() {
+					// account for wall collisions
+					// if (this.x < -padding || this.x > canvasW) {
+					// 	this.vx *= -1;
+					// }
+					// if (this.y < -padding || this.y > canvasH) {
+					// 	this.vy *= -1;
+					// }
+
+					// particle teleports to the other side once it hits a boundary
+					if (this.x < -padding) {
+						this.x = canvasW;
+					}
+					if (this.x > canvasW) {
+						this.x = -padding;
+					}
+					if (this.y < -padding) {
+						this.y = canvasH;
+					}
+					if (this.y > canvasH) {
+						this.y = -padding;
+					}
+
+					this.x += this.vx;
+					this.y += this.vy;
+				}
+
+				connectEdges(index, particles) {
+					// measure the distance between a given particle and all other particles
+					// connect any particles within a certain distance
+					for(let i = 0; i < n; i++) {
+						let dist = Math.hypot(particles[index].x - particles[i].x, particles[index].y - particles[i].y);
+						if (dist < d) {
+							let line = canvas.getContext('2d');
+							line.beginPath();
+							line.moveTo(particles[index].x, particles[index].y);
+							line.lineTo(particles[i].x, particles[i].y);
+							line.strokeStyle = "#" + this.color;
+							line.globalAlpha = 1 - (dist / d);
+							line.stroke();
+						}
+					}
+				}
+			}
+
+			// array to store each particle object
+			const particles = [];
+
+			// create all initial particle objects and push them to the array
+			for(let i = 0; i < n; i++) {
+				particles.push(new Particle());
+			}
+			// update the positions of all particles every 40 ms
+			setInterval(function() {
+				//show, move, and connect all the particles
+				for(let i = 0; i < particles.length; i++) {
+					particles[i].showParticle();
+					particles[i].moveParticle();
+					particles[i].connectEdges(i, particles);
+				}
+
+			}, 0);
+
+		</script>
+	</body>
+</html>
