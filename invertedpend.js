@@ -18,9 +18,9 @@ const g = 9.81;						// acceleration of gravity
 		M = 5;							// cart mass
 		L = 200; 						// rod length
 		dt = 0.05;						// differential time element
-		ySlider = canvasH * 0.6;	// the ground
+		ySlider = canvasH * 0.6;				// the ground
 		cartW = 30;						// cart width
-    	cartH = 20;						// cart height
+    		cartH = 20;						// cart height
 	 	barThickness = 5;				// thickness of the slider bar
 
 // controller variables
@@ -70,12 +70,6 @@ class InvertedPendulum {
 		ground.fillStyle = "#f1f0f0";
 		ground.fillRect(0, ySlider, canvasW, barThickness);
 		ground.stroke();
-
-		let vertical = canvas.getContext('2d');
-		vertical.beginPath();
-		vertical.fillStyle = '#f1f0f0';
-		vertical.fillRect(canvasW/2, 0, 1, canvasH);
-		vertical.stroke();
 
 	}
 
