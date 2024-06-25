@@ -147,7 +147,7 @@ class InvertedPendulum {
 		if (control == true) {
 			let error = Math.PI/2 - this.theta;		// error term
 
-			if (error > Math.PI) {
+			if (error > Math.PI) {						// restrict the range of angle error to 0 to pi instead of 0 to 2pi. this way, the error is symmetric
 				error = 1.5*Math.PI + this.theta ;
 			}
 
