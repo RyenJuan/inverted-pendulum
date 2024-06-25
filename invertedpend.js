@@ -25,7 +25,7 @@ const g = 9.81;						// acceleration of gravity
 
 // controller variables
 let control = true;
-let kp = 350;
+let kp = 250;
 let ki = 5;
 let kd = 10;
 let integral = 0;
@@ -143,39 +143,38 @@ class InvertedPendulum {
 		}
 	}
 
+
+	// During swing up from the right, the PID controller pushes the cart in the wrong way, destabilizing the pendulum
 	PID(control, prevError) {
 		if (control == true) {
 			let error = Math.PI/2 - this.theta;		// error term
 
-			if (error > Math.PI) {						// restrict the range of angle error to 0 to pi instead of 0 to 2pi. this way, the error is symmetric
-				error = 1.5*Math.PI + this.theta ;
+			if (error > Math.PI) {
+				error = -(1.5*Math.PI + this.theta);
 			}
 
-			console.log(error);
-
-			if (error > Math.PI/4 && error < 7*Math.PI/4) { // give up if the angle is too severe
+			if (Math.abs(error) > Math.PI/4) { // give up if the angle is too severe
 				return 0;
 			}
 
 			let deriv = (error - prevError) / dt;	// derivative term
 			integral += error * dt						// integral term
 
-			let correction = -kp * error - ki * integral - kd * deriv;	// PID algorithm
+			// let correction = -kp * error - ki * integral - kd * deriv;	// PID algorithm
+			let correction = -(kp * error + ki * integral + kd * deriv);	// PID algorithm
 
 			prevError = error;	// update the error
 
 
-
-
 			// limit the control effort from approaching infinity at severe angles
-			// 500 chosen arbitrarily
+			// 300 chosen arbitrarily
 			if (correction < 0){
-				console.log(Math.max(Math.sign(correction)*500, correction));
-				return Math.max(Math.sign(correction)*500, correction);
+				console.log(Math.max(-300, correction));
+				return Math.max(-300, correction);
 			}
 			else {
-				console.log(Math.min(Math.sign(correction)*500, correction));
-				return Math.min(Math.sign(correction)*500, correction);
+				console.log(Math.min(300, correction));
+				return Math.min(300, correction);
 			}
 
 			// uncomment the return 0 to disable to controller permanantly
