@@ -18,9 +18,9 @@ const g = 9.81;						// acceleration of gravity
 		M = 5;							// cart mass
 		L = 200; 						// rod length
 		dt = 0.05;						// differential time element
-		ySlider = canvasH * 0.6;				// the ground
+		ySlider = canvasH * 0.6;	// the ground
 		cartW = 30;						// cart width
-    		cartH = 20;						// cart height
+    	cartH = 20;						// cart height
 	 	barThickness = 5;				// thickness of the slider bar
 
 // controller variables
@@ -38,7 +38,7 @@ class InvertedPendulum {
 		this.cartX = canvasW/2;
 		this.cartY = ySlider;
 		this.cartVx = 0;
-		this.theta = Math.PI*(0.48);
+		this.theta = Math.PI*(0.49);
 		this.theta_dot = 0;
 	}
 
@@ -71,6 +71,12 @@ class InvertedPendulum {
 		ground.fillRect(0, ySlider, canvasW, barThickness);
 		ground.stroke();
 
+		// let vertical = canvas.getContext('2d');
+		// vertical.beginPath();
+		// vertical.fillStyle = '#f1f0f0';
+		// vertical.fillRect(canvasW/2, 0, 1, canvasH);
+		// vertical.stroke();
+
 	}
 
 	calcPhysics(x, x_dot, theta, theta_dot, F, control) {
@@ -87,7 +93,7 @@ class InvertedPendulum {
 		let x_ddot = (F - m * L * Math.pow(theta_dot,2) * Math.cos(theta) + m * g * Math.cos(theta) * Math.sin(theta)) / (M + m - m * Math.pow(Math.sin(theta),2));
 		let theta_ddot = -((g * Math.cos(theta))/L) - ((Math.sin(theta) * x_ddot)/L);
 
-		// my attempt at 4th order runge kutta
+		// attempt at 4th order runge kutta
 		let k1 = x_ddot;
 		let k2 = (F - m * L * Math.pow(theta_dot + (0.5) * dt * k1,2) * Math.cos(theta + (0.5) * dt * k1) + m * g * Math.cos(theta + (0.5) * dt * k1) * Math.sin(theta + (0.5) * dt * k1)) / (M + m - m * Math.pow(Math.sin(theta + (0.5) * dt * k1),2));
 		let k3 = (F - m * L * Math.pow(theta_dot + (0.5) * dt * k2,2) * Math.cos(theta + (0.5) * dt * k2) + m * g * Math.cos(theta + (0.5) * dt * k2) * Math.sin(theta + (0.5) * dt * k2)) / (M + m - m * Math.pow(Math.sin(theta + (0.5) * dt * k2),2));
@@ -141,7 +147,13 @@ class InvertedPendulum {
 		if (control == true) {
 			let error = Math.PI/2 - this.theta;		// error term
 
-			if (error > Math.abs(Math.PI/4)) { // give up if the angle is too severe
+			if (error > Math.PI) {
+				error = 1.5*Math.PI + this.theta ;
+			}
+
+			console.log(error);
+
+			if (error > Math.PI/4 && error < 7*Math.PI/4) { // give up if the angle is too severe
 				return 0;
 			}
 
@@ -150,12 +162,24 @@ class InvertedPendulum {
 
 			let correction = -kp * error - ki * integral - kd * deriv;	// PID algorithm
 
-			prevError = error;
+			prevError = error;	// update the error
+
+
+
+
+			// limit the control effort from approaching infinity at severe angles
+			// 500 chosen arbitrarily
+			if (correction < 0){
+				console.log(Math.max(Math.sign(correction)*500, correction));
+				return Math.max(Math.sign(correction)*500, correction);
+			}
+			else {
+				console.log(Math.min(Math.sign(correction)*500, correction));
+				return Math.min(Math.sign(correction)*500, correction);
+			}
 
 			// uncomment the return 0 to disable to controller permanantly
 			// comment out the correction to disable the controller
-
-			return correction;
 			// return 0;
 		}
 		else {
