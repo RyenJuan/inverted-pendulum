@@ -1,15 +1,53 @@
 <!DOCTYPE html>
 <html>
 	<head>
+	    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	    <title>Inverted Pendulum Simulation</title>
+		 <!-- Google Font Links -->
+		 <!-- Roboto/Montserrat-->
 
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Inverted Pendulum Simulation</title>
+		 <link rel="preconnect" href="https://fonts.googleapis.com">
+		 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		 <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
 
+		 <style>
+	        #title {
+	            position: absolute;
+	            top: 10px;
+	            left: 10px;
+	            color: white;
+					font-family: "Montserrat", sans-serif;
+					font-optical-sizing: auto;
+					font-weight: 300;
+					font-style: normal;
+	            font-size: 1.75em;
+	            padding: 5px 10px;
+	            border-radius: 5px;
+	        }
+	        #description {
+	            position: absolute;
+	            top: 60px; /* Adjust this value as needed */
+	            left: 10px;
+	            color: white;
+					font-family: "Montserrat", sans-serif;
+					font-optical-sizing: auto;
+					font-weight: 300;
+					font-style: normal;
+	            padding: 5px 10px;
+	            border-radius: 5px;
+	            width: calc(100% - 20px); /* Adjust width to fit within the viewport */
+	            box-sizing: border-box;
+	        }
+	    </style>
 	</head>
-
 	<body style="margin: 0; min-height: 100vh; background: radial-gradient(ellipse at bottom, #1b2735 0%, #292a38 100%);">
-		<canvas id="theCanvas"></canvas>
-		<script src="invertedpend.js"></script>
+	    <div id="title">Inverted Pendulum Balance</div>
 
+	    <div id="description">This is an inverted pendulum on a moving cart. A PID controller is trying to balance the pendulum to stay upright<br><br>
+		 - <b>Left/Right Arrow Key</b> -> Hold the key to nudge the cart to the left/right <br>
+	    - <b>Spacebar</b> -> Press to enable/disable the controller</div>
+
+	    <canvas id="theCanvas"></canvas>
+	    <script src="invertedpend.js"></script>
 	</body>
 </html>

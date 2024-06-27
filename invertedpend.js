@@ -25,8 +25,8 @@ const g = 9.81;						// acceleration of gravity
 
 // controller variables
 let control = true;
-let kp = 250;
-let ki = 5;
+let kp = 175;
+let ki = 50;
 let kd = 10;
 let integral = 0;
 let prevError = 0;
@@ -169,11 +169,11 @@ class InvertedPendulum {
 			// limit the control effort from approaching infinity at severe angles
 			// 300 chosen arbitrarily
 			if (correction < 0){
-				console.log(Math.max(-300, correction));
+				// console.log(Math.max(-300, correction));
 				return Math.max(-300, correction);
 			}
 			else {
-				console.log(Math.min(300, correction));
+				// console.log(Math.min(300, correction));
 				return Math.min(300, correction);
 			}
 
@@ -199,7 +199,7 @@ var appliedForce = 0;
 document.onkeydown = checkKey;
 document.onkeyup = noKey;
 
-// check for any key downs to modify the value of appliedForce
+// check for any key downs to modify the value of appliedForce and control
 function checkKey(e) {
 	 e = e || window.event;
 
@@ -211,21 +211,32 @@ function checkKey(e) {
 		 console.log("right key down");
 		 appliedForce = 35;
 	 }
-	 if (e.keyCode == '32') {	// space bar
-		 console.log("controller off");
-		 control = false;
+
+	 if (e.keyCode == '32') {
+		 //the event handler was running twice, causing rapid switching between on/off
+		 e.stopImmediatePropagation();
+		 if (control == true) {
+			  console.log("controller off");
+			  control = false;
+		 }
+		 else {
+			  console.log("controller on");
+			  control = true;
+		 }
 	 }
+
 }
 
 // check for no key presses to reset applied force back to 0
 function noKey(e) {
 	e = e || window.event;
 
-	if (e.keyCode == '37' || e.keyCode == '39' || e.keyCode == '32') {
-		console.log("controller on")
+	if (e.keyCode == '37' || e.keyCode == '39') {
+		// console.log("controller on")
 		appliedForce = 0;
-		control = true;
+		// control = true;
 	}
+
 }
 
 document.addEventListener('keydown', checkKey);
