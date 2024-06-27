@@ -25,7 +25,7 @@ const g = 9.81;						// acceleration of gravity
 
 // controller variables
 let control = true;
-let kp = 300;
+let kp = 500;
 let ki = 5;
 let kd = 10;
 let integral = 0;
